@@ -7,7 +7,8 @@ impl Plugin for TitlePlugin {
     fn build(&self, app: &mut App) {
         app.add_systems(OnEnter(AppState::Title), setup)
             .add_systems(Update, play_game.run_if(in_state(AppState::Title)))
-            .add_systems(OnExit(AppState::Title), cleanup);
+            .add_systems(OnExit(AppState::Title), cleanup)
+            .insert_resource(ClearColor(Color::rgb(0.9, 0.9, 0.9)));
     }
 }
 
