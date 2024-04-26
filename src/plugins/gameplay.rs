@@ -6,7 +6,10 @@ pub struct GameplayPlugin;
 impl Plugin for GameplayPlugin {
     fn build(&self, app: &mut App) {
         app.add_systems(OnEnter(AppState::Gameplay), spawn_puyo)
-            .add_systems(Update, fall_puyo.run_if(in_state(AppState::Gameplay)))
+            .add_systems(
+                Update,
+                (fall_puyo, return_title).run_if(in_state(AppState::Gameplay)),
+            )
             .add_systems(OnExit(AppState::Gameplay), remove_entity);
     }
 }
@@ -54,4 +57,14 @@ fn fall_puyo(mut query: Query<&mut Transform, With<Puyo>>) {
 // Entityを削除する
 fn remove_entity(mut commands: Commands, game_data: Res<GameData>) {
     commands.entity(game_data.gameplay_entity).despawn();
+}
+
+// return title
+pub fn return_title(
+    keyboard_input: Res<ButtonInput<KeyCode>>,
+    mut state: ResMut<NextState<AppState>>,
+) {
+    if keyboard_input.just_pressed(KeyCode::KeyR) {
+        state.set(AppState::Title);
+    }
 }
